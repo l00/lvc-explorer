@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LVC Explorer</title>
+</head>
+<style>
+    body {
+        text-align: center;
+        background-color: black;
+        color: white;
+    }
+    table {
+        margin: auto;
+    }
+    input {
+        margin: auto;
+    }
+    #info {
+        font-size: 14px;
+        color: rgb(177, 177, 177);
+    }
+</style>
+<body>
+    <div id="info"></div>
+    <script>
+        async function fetchInfo() {
+            try {
+                const blockHeaderResponse = await fetch("http://127.0.0.1:8000/last_block_header");
+                const blockHeaderData = await blockHeaderResponse.json();
+
+                const lastBlockRes = await fetch(`http://127.0.0.1:8000/block_details?hash=${blockHeaderData.height}`);
+                const lastBlockInfo = await lastBlockRes.json();
+
+                let html = `<p>Difficulty: <strong>${blockHeaderData.difficulty}</strong> | Height: <strong>${blockHeaderData.height}</strong> | Reward: <strong>${(blockHeaderData.reward / 1e12).toFixed(8)} LVC</strong> | Mined coins: <strong>${(lastBlockInfo.result.block.alreadyGeneratedCoins / 1e12).toFixed(0)}</strong> | Transactions: <strong>${lastBlockInfo.result.block.alreadyGeneratedTransactions}</strong></p>`;
+
+                document.getElementById("info").innerHTML = html;
+            } catch (error) {
+                console.error("Error:", error);
+                document.getElementById("info").textContent = "Error: " + error.message;
+            }
+        }
+
+        fetchInfo();
+    </script>
+    
+    <br>
+    <h2>Search by transaction hash, block hash or height</h2>
+    <input type="text" id="searchInput" placeholder="Enter hash or height">
+    <button onclick="search()">Search</button>
+
+    <div id="searchResult"></div>
+
+    <script>
+    async function search() {
+        const value = document.getElementById("searchInput").value;
+
+        try {
+        const blockRes = await fetch(`http://127.0.0.1:8000/block_details?hash=${value}`);
+        const blockData = await blockRes.json();
+
+        if (blockData.error) {
+            const txRes = await fetch(`http://127.0.0.1:8000/tx_details?hash=${value}`);
+            const txData = await txRes.json();
+            if (txData.error) {
+                document.getElementById("searchResult").textContent = "No block or transaction found";
+            } else {
+                let html = `<h3>Transaction</h3><br>
+                Hash: <strong>${txData.result.txDetails.hash}</strong><br>
+                Amount: <strong>${(txData.result.txDetails.amount_out / 1e12).toFixed(8)} LVC</strong><br>`;
+
+                const txDate = new Date(txData.result.block.timestamp * 1000);
+                const txTime = txDate.toLocaleTimeString("en-GB");
+                const txDay = txDate.toLocaleDateString("en-GB");
+
+                html += `Timestamp: <strong>${txTime} | ${txDay}<br></strong>
+                Block hash: <strong>${txData.result.block.hash}</strong> | Block height: <strong>${txData.result.block.height}</strong><br>
+                Status: <strong>${txData.result.status}</strong><br>`;
+
+                document.getElementById("searchResult").innerHTML = html;
+            }
+        } else {
+            let html = `<h3>Block</h3><br>
+            Hash: <strong>${blockData.result.block.hash}</strong><br>
+            Height: <strong>${blockData.result.block.height}</strong><br>
+            Difficulty: <strong>${blockData.result.block.difficulty}</strong><br>`
+
+            const blockDate = new Date(blockData.result.block.timestamp * 1000);
+            const blockTime = blockDate.toLocaleTimeString("en-GB");
+            const blockDay = blockDate.toLocaleDateString("en-GB");
+
+            html += `Timestamp: <strong>${blockTime} | ${blockDay}</strong><br>
+            Size: <strong>${blockData.result.block.blockSize} B</strong><br>
+            Reward: <strong>${(blockData.result.block.reward / 1e12).toFixed(8)} LVC</strong><br>
+            Fee: <strong>${(blockData.result.block.totalFeeAmount / 1e12).toFixed(8)} LVC</strong><br>
+            <br>
+            Transactions<br>`;
+            for (const tx of blockData.result.block.transactions) {
+                html += `Hash: <strong>${tx.hash}</strong> | Amount: <strong>${(tx.amount_out / 1e12).toFixed(8)} LVC</strong> | Fee: <strong>${(tx.fee / 1e12).toFixed(8)} LVC</strong> | Size: <strong>${tx.size} B</strong><br>`;
+            }
+
+            document.getElementById("searchResult").innerHTML = html;
+        }
+
+        } catch (error) {
+        document.getElementById("searchResult").textContent = "Error: " + error.message;
+        }
+    }
+    </script>
+
+    <h2>Latest blocks</h2>
+    <div id="lastTenBlocks"></div>
+    <script>
+        async function fetchBlock() {
+  try {
+    const heightRes = await fetch("http://127.0.0.1:8000/height");
+    const heightData = await heightRes.json();
+    const height = heightData.height;
+    
+    const response = await fetch(`http://127.0.0.1:8000/blocks?height=${height}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
+
+    const data = await response.json();
+
+    let html = "<table border='1' cellpadding='6'>";
+    html += "<tr><th>Height</th><th>Hash</th><th>Timestamp</th><th>Tx count</th></tr>";
+
+    for (let i = 0; i < 10; i++) {
+    const block = data.blocks[i];
+    const date = new Date(block.timestamp * 1000);
+    const time = date.toLocaleTimeString("en-GB");
+    const day = date.toLocaleDateString("en-GB");
+    
+    html += `<tr>
+        <td>${block.height}</td>
+        <td>${block.hash}</td>
+        <td>${time} | ${day}</td>
+        <td>${block.tx_count}</td>
+    </tr>`;
+    }
+
+    html += "</table>";
+    document.getElementById("lastTenBlocks").innerHTML = html;
+
+  } catch (error) {
+    console.error("Error:", error);
+    document.getElementById("lastTenBlocks").textContent = "Error: " + error.message;
+  }
+}
+
+fetchBlock();
+    </script>
+</body>
+</html>
