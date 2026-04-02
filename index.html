@@ -21,6 +21,34 @@
         font-size: 14px;
         color: rgb(177, 177, 177);
     }
+    footer {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+    }
+    a:link {
+    color: rgb(177, 177, 177);
+    background-color: transparent;
+    text-decoration: none;
+    }
+
+    a:visited {
+    color: rgb(177, 177, 177);
+    background-color: transparent;
+    text-decoration: none;
+    }
+
+    a:hover {
+    color: rgb(102, 102, 102);
+    background-color: transparent;
+    text-decoration: underline;
+    }
+
+    a:active {
+    color: rgb(177, 177, 177);
+    background-color: transparent;
+    text-decoration: underline;
+    }
 </style>
 <body>
     <div id="info"></div>
@@ -155,5 +183,10 @@
 
 fetchBlock();
     </script>
+
+    <footer>
+        <p><a href="http://127.0.0.1:8000/docs">API Docs</a> • 
+        <a href="https://github.com/l00/lvc-explorer">Github</a></p>
+    </footer>
 </body>
 </html>
