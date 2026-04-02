@@ -1,2 +1,2 @@
 # lvc-explorer
-Blockchain explorer for Levcoin cryptocurrency.
+Blockchain explorer for Levcoin.
