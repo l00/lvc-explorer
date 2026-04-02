@@ -31,7 +31,7 @@ class HeightResponse(BaseModel):
     height: int
 
 @app.get("/last_block_header")
-@limiter.limit("30/minute;2/second")
+@limiter.limit("300/minute;30/second")
 async def get_last_block_header(request: Request) -> LastBlockHeaderResponse:
     raw = rpc.get_last_block_header()
     block = raw["result"]["block_header"]
@@ -42,13 +42,13 @@ async def get_last_block_header(request: Request) -> LastBlockHeaderResponse:
     )
 
 @app.get("/height")
-@limiter.limit("30/minute;2/second")
+@limiter.limit("300/minute;30/second")
 async def get_height(request: Request) -> HeightResponse:
     raw = rpc.get_last_block_header()
     return HeightResponse(height=raw["result"]["block_header"]["height"])
 
 @app.get("/blocks")
-@limiter.limit("30/minute;2/second")
+@limiter.limit("100/minute;30/second")
 async def get_blocks_list(height: int, request: Request) -> BlocksResponse:
     raw = rpc.get_blocks_list(height)
     return BlocksResponse(
@@ -57,13 +57,13 @@ async def get_blocks_list(height: int, request: Request) -> BlocksResponse:
     )
 
 @app.get("/tx_details")
-@limiter.limit("30/minute;2/second")
+@limiter.limit("100/minute;30/second")
 async def get_tx_details(hash: str, request: Request):
     response = rpc.get_tx_details(hash)
     return response
 
 @app.get("/block_details")
-@limiter.limit("30/minute;2/second")
+@limiter.limit("100/minute;30/second")
 async def get_block_details(hash: str, request: Request):
     response =  rpc.get_block_details(hash)
     return response
