@@ -4,9 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LVC Explorer</title>
+    <link rel="icon" type="image/png3" sizes="180x180" href="logo.png">
 </head>
 <link rel="stylesheet" href="styles.css">
 <body>
+    <div id="logo">
+        <img src="logo.png" alt="Levcoin Logo">
+        <p>Explorer</p>
+    </div>
+    <hr class="solid">
     <div id="info"></div>
     <script>
         async function fetchInfo() {
@@ -144,6 +150,7 @@ fetchBlock();
     </script>
 
     <footer>
+        <hr class="solid">
         <p><a href="http://127.0.0.1:8000/docs">API Docs</a> • 
         <a href="https://github.com/l00/lvc-explorer">Github</a></p>
     </footer>

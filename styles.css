@@ -41,3 +41,15 @@ color: rgb(177, 177, 177);
 background-color: transparent;
 text-decoration: underline;
 }
+#logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bold;
+    font-size: 1.5em;
+}
+hr.solid {
+    border-top: .2px solid #424242;
+}
