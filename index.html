@@ -5,51 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LVC Explorer</title>
 </head>
-<style>
-    body {
-        text-align: center;
-        background-color: black;
-        color: white;
-    }
-    table {
-        margin: auto;
-    }
-    input {
-        margin: auto;
-    }
-    #info {
-        font-size: 14px;
-        color: rgb(177, 177, 177);
-    }
-    footer {
-        position: fixed;
-        bottom: 0;
-        width: 100%;
-    }
-    a:link {
-    color: rgb(177, 177, 177);
-    background-color: transparent;
-    text-decoration: none;
-    }
-
-    a:visited {
-    color: rgb(177, 177, 177);
-    background-color: transparent;
-    text-decoration: none;
-    }
-
-    a:hover {
-    color: rgb(102, 102, 102);
-    background-color: transparent;
-    text-decoration: underline;
-    }
-
-    a:active {
-    color: rgb(177, 177, 177);
-    background-color: transparent;
-    text-decoration: underline;
-    }
-</style>
+<link rel="stylesheet" href="styles.css">
 <body>
     <div id="info"></div>
     <script>
@@ -77,6 +33,9 @@
     <h2>Search by transaction hash, block hash or height</h2>
     <input type="text" id="searchInput" placeholder="Enter hash or height">
     <button onclick="search()">Search</button>
+    <script> 
+        document.getElementById('searchInput').addEventListener('keydown', function(e) { if (e.key === 'Enter') search(); });
+    </script>
 
     <div id="searchResult"></div>
 
