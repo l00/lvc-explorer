@@ -37,8 +37,10 @@
     
     <br>
     <h2>Search by transaction hash, block hash or height</h2>
-    <input type="text" id="searchInput" placeholder="Enter hash or height">
-    <button onclick="search()">Search</button>
+    <div class="search-container">
+        <input type="text" id="searchInput" placeholder="Enter hash or height">
+        <button onclick="search()"><img width=18px; height=18px; src="search.png" alt="Search"></button>
+    </div>
     <script> 
         document.getElementById('searchInput').addEventListener('keydown', function(e) { if (e.key === 'Enter') search(); });
     </script>

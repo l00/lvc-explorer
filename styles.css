@@ -53,3 +53,43 @@ text-decoration: underline;
 hr.solid {
     border-top: .2px solid #424242;
 }
+.search-container {
+    display: flex;
+    width: 250px;
+    margin: 0 auto;
+    align-items: center;
+    gap: 6px;
+    background: #1a1a1a;
+    border: 1px solid #2e2e2e;
+    border-radius: 8px;
+    padding: 4px 8px;
+    transition: border-color 0.2s;
+}
+.search-container:focus-within {
+    border-color: #555;
+}
+.search-container input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-size: 13px;
+    color: #ccc;
+}
+.search-container input::placeholder {
+    color: #555;
+}
+.search-container button {
+    background: #2e2e2e;
+    border: none;
+    border-radius: 6px;
+    width: 26px;
+    height: 26px;
+    cursor: pointer;
+    color: #aaa;
+    font-size: 12px;
+}
+.search-container button:hover {
+    background: #3a3a3a;
+    color: #eee;
+}
