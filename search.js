@@ -3,11 +3,11 @@ async function search() {
     if (!value) return;
 
     try {
-    const blockRes = await fetch(`http://127.0.0.1:8000/block_details?hash=${value}`);
+    const blockRes = await fetch(`${config.apiUrl}/block_details?hash=${value}`);
     const blockData = await blockRes.json();
 
     if (blockData.error) {
-        const txRes = await fetch(`http://127.0.0.1:8000/tx_details?hash=${value}`);
+        const txRes = await fetch(`${config.apiUrl}/tx_details?hash=${value}`);
         const txData = await txRes.json();
         if (txData.error) {
             document.getElementById("search-result").textContent = t('no_result');

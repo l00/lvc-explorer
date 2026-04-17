@@ -1,10 +1,10 @@
 async function fetchBlock() {
     try {
-        const heightRes = await fetch("http://127.0.0.1:8000/height");
+        const heightRes = await fetch(`${config.apiUrl}/height`);
         const heightData = await heightRes.json();
         const height = heightData.height;
         
-        const response = await fetch(`http://127.0.0.1:8000/blocks?height=${height}`);
+        const response = await fetch(`${config.apiUrl}/blocks?height=${height}`);
 
     const data = await response.json();
 
