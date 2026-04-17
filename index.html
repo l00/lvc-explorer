@@ -9,7 +9,19 @@
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
 </head>
 <link rel="stylesheet" href="styles.css">
+<script src="translations.js"></script>
 <body>
+    <div id="language-button">
+        <button id="langToggle"></button>
+        <script>
+        document.getElementById('langToggle').textContent = lang === 'en' ? 'бг' : 'en';
+        document.getElementById('langToggle').addEventListener('click', () => {
+        localStorage.setItem('lang', lang === 'en' ? 'bg' : 'en');
+        location.reload();
+        });
+        </script>
+    </div>
+
     <div id="logo">
         <img src="logo.png" alt="Levcoin Logo">
         <p>Explorer</p>
@@ -25,7 +37,7 @@
                 const lastBlockRes = await fetch(`http://127.0.0.1:8000/block_details?hash=${blockHeaderData.height}`);
                 const lastBlockInfo = await lastBlockRes.json();
 
-                let html = `<div id='fetch-stats'> <p>Difficulty: <strong>${blockHeaderData.difficulty}</strong> | Height: <strong>${blockHeaderData.height}</strong> | Reward: <strong>${(blockHeaderData.reward / 1e12).toFixed(8)} LVC</strong> | Mined coins: <strong>${(lastBlockInfo.result.block.alreadyGeneratedCoins / 1e12).toFixed(0)}</strong> | Transactions: <strong>${lastBlockInfo.result.block.alreadyGeneratedTransactions}</strong></p> </div>`;
+                let html = `<div id='fetch-stats'> <p>${t('difficulty')}: <strong>${blockHeaderData.difficulty}</strong> | ${t('height')}: <strong>${blockHeaderData.height}</strong> | ${t('reward')}: <strong>${(blockHeaderData.reward / 1e12).toFixed(8)} LVC</strong> | ${t('mined_coins')}: <strong>${(lastBlockInfo.result.block.alreadyGeneratedCoins / 1e12).toFixed(0)}</strong> | ${t('transactions')}: <strong>${lastBlockInfo.result.block.alreadyGeneratedTransactions}</strong></p> </div>`;
 
                 document.getElementById("info").innerHTML = html;
             } catch (error) {
@@ -38,12 +50,14 @@
     </script>
     
     <br>
-    <h2>Search by transaction hash, block hash or height</h2>
+    <h2 id="search-title"></h2>
     <div id="search-container">
-        <input type="text" id="searchInput" placeholder="Enter hash or height">
+        <input type="text" id="searchInput" placeholder="">
         <button onclick="search()"><img width=18px; height=18px; src="search.png" alt="Search"></button>
     </div>
-    <script> 
+    <script>
+        document.getElementById('search-title').textContent = t('search_title');
+        document.getElementById('searchInput').placeholder = t('search_placeholder');
         document.getElementById('searchInput').addEventListener('keydown', function(e) { if (e.key === 'Enter') search(); });
     </script>
 
@@ -61,40 +75,40 @@
             const txRes = await fetch(`http://127.0.0.1:8000/tx_details?hash=${value}`);
             const txData = await txRes.json();
             if (txData.error) {
-                document.getElementById("search-result").textContent = "No block or transaction found";
+                document.getElementById("search-result").textContent = t('no_result');
             } else {
-                let html = `<h3>Transaction</h3><br>
-                Hash: <strong>${txData.result.txDetails.hash} ${copyBtn(txData.result.txDetails.hash)}</strong><br>
-                Amount: <strong>${(txData.result.txDetails.amount_out / 1e12).toFixed(8)} LVC</strong><br>`;
+                let html = `<h3>${t('transaction')}</h3><br>
+                ${t('hash')}: <strong>${txData.result.txDetails.hash} ${copyBtn(txData.result.txDetails.hash)}</strong><br>
+                ${t('amount')}: <strong>${(txData.result.txDetails.amount_out / 1e12).toFixed(8)} LVC</strong><br>`;
 
                 const txDate = new Date(txData.result.block.timestamp * 1000);
                 const txTime = txDate.toLocaleTimeString("en-GB");
                 const txDay = txDate.toLocaleDateString("en-GB");
 
-                html += `Timestamp: <strong>${txTime} | ${txDay}<br></strong>
-                Block hash: <strong>${txData.result.block.hash}</strong> | Block height: <strong>${txData.result.block.height}</strong><br>
-                Status: <strong>${txData.result.status}</strong><br>`;
+                html += `${t('timestamp')}: <strong>${txTime} | ${txDay}<br></strong>
+                ${t('block_hash')}: <strong>${txData.result.block.hash}</strong> | ${t('block_height')}: <strong>${txData.result.block.height}</strong><br>
+                ${t('status')}: <strong>${txData.result.status}</strong><br>`;
 
                 document.getElementById("search-result").innerHTML = html;
             }
         } else {
-            let html = `<h3>Block</h3><br>
-            Hash: <strong>${blockData.result.block.hash} ${copyBtn(blockData.result.block.hash)}</strong><br>
-            Height: <strong>${blockData.result.block.height}</strong><br>
-            Difficulty: <strong>${blockData.result.block.difficulty}</strong><br>`
+            let html = `<h3>${t('block')}</h3><br>
+            ${t('hash')}: <strong>${blockData.result.block.hash} ${copyBtn(blockData.result.block.hash)}</strong><br>
+            ${t('height')}: <strong>${blockData.result.block.height}</strong><br>
+            ${t('difficulty')}: <strong>${blockData.result.block.difficulty}</strong><br>`
 
             const blockDate = new Date(blockData.result.block.timestamp * 1000);
             const blockTime = blockDate.toLocaleTimeString("en-GB");
             const blockDay = blockDate.toLocaleDateString("en-GB");
 
-            html += `Timestamp: <strong>${blockTime} | ${blockDay}</strong><br>
-            Size: <strong>${blockData.result.block.blockSize} B</strong><br>
-            Reward: <strong>${(blockData.result.block.reward / 1e12).toFixed(8)} LVC</strong><br>
-            Fee: <strong>${(blockData.result.block.totalFeeAmount / 1e12).toFixed(8)} LVC</strong><br>
+            html += `${t('timestamp')}: <strong>${blockTime} | ${blockDay}</strong><br>
+            ${t('size')}: <strong>${blockData.result.block.blockSize} B</strong><br>
+            ${t('reward')}: <strong>${(blockData.result.block.reward / 1e12).toFixed(8)} LVC</strong><br>
+            ${t('fee')}: <strong>${(blockData.result.block.totalFeeAmount / 1e12).toFixed(8)} LVC</strong><br>
             <br>
-            Transactions<br>`;
+            ${t('transactions')}<br>`;
             for (const tx of blockData.result.block.transactions) {
-                html += `Hash: <strong>${tx.hash}</strong> ${copyBtn(tx.hash)} | Amount: <strong>${(tx.amount_out / 1e12).toFixed(8)} LVC</strong> | Fee: <strong>${(tx.fee / 1e12).toFixed(8)} LVC</strong> | Size: <strong>${tx.size} B</strong><br>`;
+                html += `${t('hash')}: <strong>${tx.hash}</strong> ${copyBtn(tx.hash)} | ${t('amount')}: <strong>${(tx.amount_out / 1e12).toFixed(8)} LVC</strong> | ${t('fee')}: <strong>${(tx.fee / 1e12).toFixed(8)} LVC</strong> | ${t('size')}: <strong>${tx.size} B</strong><br>`;
             }
 
             document.getElementById("search-result").innerHTML = html;
@@ -106,8 +120,11 @@
     }
     </script>
 
-    <h2>Latest blocks</h2>
+    <h2 id="latest-blocks-title"></h2>
     <div id="last-ten-blocks"></div>
+    <script>
+        document.getElementById('latest-blocks-title').textContent = t('latest_blocks');
+    </script>
     <script>
     async function fetchBlock() {
         try {
@@ -125,7 +142,7 @@
         const data = await response.json();
 
         let html = "<table id='blocks-table' border='1' cellpadding='6'>";
-        html += "<tr><th>Height</th><th>Hash</th><th>Timestamp</th><th>Tx count</th></tr>";
+        html += `<tr><th>${t('height')}</th><th>${t('hash')}</th><th>${t('timestamp')}</th><th>${t('tx_count')}</th></tr>`;
 
         for (let i = 0; i < 10; i++) {
         const block = data.blocks[i];
@@ -169,8 +186,11 @@
 
     <footer>
         <hr class="solid">
-        <p><a href="http://127.0.0.1:8000/docs">API Docs</a> • 
+        <p><a href="http://127.0.0.1:8000/docs" id="api-docs-link"></a> • 
         <a href="https://github.com/l00/lvc-explorer">Github</a></p>
     </footer>
+    <script>
+        document.getElementById('api-docs-link').textContent = t('api_docs');
+    </script>
 </body>
 </html>
