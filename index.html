@@ -64,7 +64,7 @@
                 document.getElementById("search-result").textContent = "No block or transaction found";
             } else {
                 let html = `<h3>Transaction</h3><br>
-                Hash: <strong>${txData.result.txDetails.hash}</strong><br>
+                Hash: <strong>${txData.result.txDetails.hash} ${copyBtn(txData.result.txDetails.hash)}</strong><br>
                 Amount: <strong>${(txData.result.txDetails.amount_out / 1e12).toFixed(8)} LVC</strong><br>`;
 
                 const txDate = new Date(txData.result.block.timestamp * 1000);
@@ -79,7 +79,7 @@
             }
         } else {
             let html = `<h3>Block</h3><br>
-            Hash: <strong>${blockData.result.block.hash}</strong><br>
+            Hash: <strong>${blockData.result.block.hash} ${copyBtn(blockData.result.block.hash)}</strong><br>
             Height: <strong>${blockData.result.block.height}</strong><br>
             Difficulty: <strong>${blockData.result.block.difficulty}</strong><br>`
 
@@ -94,7 +94,7 @@
             <br>
             Transactions<br>`;
             for (const tx of blockData.result.block.transactions) {
-                html += `Hash: <strong>${tx.hash}</strong> | Amount: <strong>${(tx.amount_out / 1e12).toFixed(8)} LVC</strong> | Fee: <strong>${(tx.fee / 1e12).toFixed(8)} LVC</strong> | Size: <strong>${tx.size} B</strong><br>`;
+                html += `Hash: <strong>${tx.hash}</strong> ${copyBtn(tx.hash)} | Amount: <strong>${(tx.amount_out / 1e12).toFixed(8)} LVC</strong> | Fee: <strong>${(tx.fee / 1e12).toFixed(8)} LVC</strong> | Size: <strong>${tx.size} B</strong><br>`;
             }
 
             document.getElementById("search-result").innerHTML = html;
@@ -152,6 +152,19 @@
 
     fetchBlock();
     setInterval(fetchBlock, 30000);
+    </script>
+
+    <script>
+    function copyBtn(text) {
+    return `<button onclick="navigator.clipboard.writeText('${text}');
+        const check = this.querySelector('.icon-check');
+        check.style.opacity='1';
+        setTimeout(() => check.style.opacity='0', 2000);
+        " class="copy-btn">
+        <img width="20" height="20" src="clipboard.png" alt="Copy">
+        <img width="20" height="20" src="clipboard-check.png" alt="Copied" class="icon-check">
+    </button>`;
+    }
     </script>
 
     <footer>

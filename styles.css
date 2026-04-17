@@ -104,3 +104,29 @@ hr.solid {
 #search-result strong {
     font-family: 'JetBrains Mono', monospace;
 }
+.copy-btn {
+    background: #2a2a2a;
+    border: 1px solid #3a3a3a;
+    border-radius: 4px;
+    font-size: 11px;
+    padding: 2px 6px;
+    cursor: pointer;
+    margin-left: 4px;
+    position: relative;
+    width: 32px;
+    height: 24px;
+}
+
+.copy-btn img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 16px;
+    height: 16px;
+}
+
+.copy-btn .icon-check {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
