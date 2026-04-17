@@ -17,19 +17,32 @@
 <script src="search.js"></script>
 
 <body>
-    <div id="language-button">
-        <button id="langToggle"></button>
-        <script>
-        document.getElementById('langToggle').textContent = lang === 'en' ? 'бг' : 'en';
-        document.getElementById('langToggle').addEventListener('click', () => {
-            localStorage.setItem('lang', lang === 'en' ? 'bg' : 'en');
-            location.reload();
-        });
-        </script>
-    </div>
+    <button id="lang-toggle"></button>
+    <script>
+    document.getElementById('lang-toggle').textContent = lang === 'en' ? 'бг' : 'en';
+    document.getElementById('lang-toggle').addEventListener('click', () => {
+        localStorage.setItem('lang', lang === 'en' ? 'bg' : 'en');
+        location.reload();
+    });
+    </script>
 
-    <div id="logo">
-        <img src="logo.png" alt="Levcoin Logo">
+    <button id="theme-toggle"></button>
+    <script>
+        const theme = localStorage.getItem('theme') || 'dark';
+        if (theme === 'light') document.body.classList.add('light');
+
+        const themeToggle = document.getElementById('theme-toggle');
+        themeToggle.textContent = theme === 'dark' ? '☀' : '☾';
+
+        themeToggle.addEventListener('click', () => {
+        const isLight = document.body.classList.toggle('light');
+        localStorage.setItem('theme', isLight ? 'light' : 'dark');
+        themeToggle.textContent = isLight ? '☾' : '☀';
+        });
+    </script>
+
+    <div id="title">
+        <img src="logo.png" id="lvc-logo" alt="Levcoin Logo">
         <p>Explorer</p>
     </div>
     <hr class="solid">
@@ -42,7 +55,7 @@
     <h2 id="search-title"></h2>
     <div id="search-container">
         <input type="text" id="searchInput" placeholder="">
-        <button onclick="search()"><img width=18px; height=18px; src="search.png" alt="Search"></button>
+        <button onclick="search()"><img width=18px height=18px src="search.png" alt="Search"></button>
     </div>
     <script>
         document.getElementById('search-title').textContent = t('search_title');
@@ -68,12 +81,12 @@
     <script>
     function copyBtn(text) {
     return `<button onclick="navigator.clipboard.writeText('${text}');
-        const check = this.querySelector('.icon-check');
+        const check = this.querySelector('#icon-check');
         check.style.opacity='1';
         setTimeout(() => check.style.opacity='0', 2000);
-        " class="copy-btn">
+        " id="copy-btn">
         <img width="20" height="20" src="clipboard.png" alt="Copy">
-        <img width="20" height="20" src="clipboard-check.png" alt="Copied" class="icon-check">
+        <img width="20" height="20" src="clipboard-check.png" alt="Copied" id="icon-check">
     </button>`;
     }
     </script>
