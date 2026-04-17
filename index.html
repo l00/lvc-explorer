@@ -7,17 +7,22 @@
     <link rel="icon" type="image/png3" sizes="180x180" href="logo.png">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
 </head>
-<link rel="stylesheet" href="styles.css">
+
 <script src="translations.js"></script>
+<script src="fetchInfo.js"></script>
+<script src="fetchBlock.js"></script>
+<script src="search.js"></script>
+
 <body>
     <div id="language-button">
         <button id="langToggle"></button>
         <script>
         document.getElementById('langToggle').textContent = lang === 'en' ? 'бг' : 'en';
         document.getElementById('langToggle').addEventListener('click', () => {
-        localStorage.setItem('lang', lang === 'en' ? 'bg' : 'en');
-        location.reload();
+            localStorage.setItem('lang', lang === 'en' ? 'bg' : 'en');
+            location.reload();
         });
         </script>
     </div>
@@ -29,23 +34,6 @@
     <hr class="solid">
     <div id="info"></div>
     <script>
-        async function fetchInfo() {
-            try {
-                const blockHeaderResponse = await fetch("http://127.0.0.1:8000/last_block_header");
-                const blockHeaderData = await blockHeaderResponse.json();
-
-                const lastBlockRes = await fetch(`http://127.0.0.1:8000/block_details?hash=${blockHeaderData.height}`);
-                const lastBlockInfo = await lastBlockRes.json();
-
-                let html = `<div id='fetch-stats'> <p>${t('difficulty')}: <strong>${blockHeaderData.difficulty}</strong> | ${t('height')}: <strong>${blockHeaderData.height}</strong> | ${t('reward')}: <strong>${(blockHeaderData.reward / 1e12).toFixed(8)} LVC</strong> | ${t('mined_coins')}: <strong>${(lastBlockInfo.result.block.alreadyGeneratedCoins / 1e12).toFixed(0)}</strong> | ${t('transactions')}: <strong>${lastBlockInfo.result.block.alreadyGeneratedTransactions}</strong></p> </div>`;
-
-                document.getElementById("info").innerHTML = html;
-            } catch (error) {
-                console.error("Error:", error);
-                document.getElementById("info").textContent = "Error: " + error.message;
-            }
-        }
-
         fetchInfo();
     </script>
     
@@ -64,60 +52,7 @@
     <div id="search-result"></div>
 
     <script>
-    async function search() {
-        const value = document.getElementById("searchInput").value;
-
-        try {
-        const blockRes = await fetch(`http://127.0.0.1:8000/block_details?hash=${value}`);
-        const blockData = await blockRes.json();
-
-        if (blockData.error) {
-            const txRes = await fetch(`http://127.0.0.1:8000/tx_details?hash=${value}`);
-            const txData = await txRes.json();
-            if (txData.error) {
-                document.getElementById("search-result").textContent = t('no_result');
-            } else {
-                let html = `<h3>${t('transaction')}</h3><br>
-                ${t('hash')}: <strong>${txData.result.txDetails.hash} ${copyBtn(txData.result.txDetails.hash)}</strong><br>
-                ${t('amount')}: <strong>${(txData.result.txDetails.amount_out / 1e12).toFixed(8)} LVC</strong><br>`;
-
-                const txDate = new Date(txData.result.block.timestamp * 1000);
-                const txTime = txDate.toLocaleTimeString("en-GB");
-                const txDay = txDate.toLocaleDateString("en-GB");
-
-                html += `${t('timestamp')}: <strong>${txTime} | ${txDay}<br></strong>
-                ${t('block_hash')}: <strong>${txData.result.block.hash}</strong> | ${t('block_height')}: <strong>${txData.result.block.height}</strong><br>
-                ${t('status')}: <strong>${txData.result.status}</strong><br>`;
-
-                document.getElementById("search-result").innerHTML = html;
-            }
-        } else {
-            let html = `<h3>${t('block')}</h3><br>
-            ${t('hash')}: <strong>${blockData.result.block.hash} ${copyBtn(blockData.result.block.hash)}</strong><br>
-            ${t('height')}: <strong>${blockData.result.block.height}</strong><br>
-            ${t('difficulty')}: <strong>${blockData.result.block.difficulty}</strong><br>`
-
-            const blockDate = new Date(blockData.result.block.timestamp * 1000);
-            const blockTime = blockDate.toLocaleTimeString("en-GB");
-            const blockDay = blockDate.toLocaleDateString("en-GB");
-
-            html += `${t('timestamp')}: <strong>${blockTime} | ${blockDay}</strong><br>
-            ${t('size')}: <strong>${blockData.result.block.blockSize} B</strong><br>
-            ${t('reward')}: <strong>${(blockData.result.block.reward / 1e12).toFixed(8)} LVC</strong><br>
-            ${t('fee')}: <strong>${(blockData.result.block.totalFeeAmount / 1e12).toFixed(8)} LVC</strong><br>
-            <br>
-            ${t('transactions')}<br>`;
-            for (const tx of blockData.result.block.transactions) {
-                html += `${t('hash')}: <strong>${tx.hash}</strong> ${copyBtn(tx.hash)} | ${t('amount')}: <strong>${(tx.amount_out / 1e12).toFixed(8)} LVC</strong> | ${t('fee')}: <strong>${(tx.fee / 1e12).toFixed(8)} LVC</strong> | ${t('size')}: <strong>${tx.size} B</strong><br>`;
-            }
-
-            document.getElementById("search-result").innerHTML = html;
-        }
-
-        } catch (error) {
-        document.getElementById("search-result").textContent = "Error: " + error.message;
-        }
-    }
+        search();
     </script>
 
     <h2 id="latest-blocks-title"></h2>
@@ -126,49 +61,7 @@
         document.getElementById('latest-blocks-title').textContent = t('latest_blocks');
     </script>
     <script>
-    async function fetchBlock() {
-        try {
-            const heightRes = await fetch("http://127.0.0.1:8000/height");
-            const heightData = await heightRes.json();
-            const height = heightData.height;
-            
-            const response = await fetch(`http://127.0.0.1:8000/blocks?height=${height}`, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json"
-            }
-        });
-
-        const data = await response.json();
-
-        let html = "<table id='blocks-table' border='1' cellpadding='6'>";
-        html += `<tr><th>${t('height')}</th><th>${t('hash')}</th><th>${t('timestamp')}</th><th>${t('tx_count')}</th></tr>`;
-
-        for (let i = 0; i < 10; i++) {
-        const block = data.blocks[i];
-        const date = new Date(block.timestamp * 1000);
-        const time = date.toLocaleTimeString("en-GB");
-        const day = date.toLocaleDateString("en-GB");
-        
-        html += `<tr>
-            <td>${block.height}</td>
-            <td>${block.hash}</td>
-            <td>${time} | ${day}</td>
-            <td>${block.tx_count}</td>
-        </tr>`;
-        }
-
-        html += "</table>";
-        document.getElementById("last-ten-blocks").innerHTML = html;
-
-        } catch (error) {
-            console.error("Error:", error);
-            document.getElementById("last-ten-blocks").textContent = "Error: " + error.message;
-        }
-    }
-
-    fetchBlock();
-    setInterval(fetchBlock, 30000);
+        fetchBlock();
     </script>
 
     <script>
