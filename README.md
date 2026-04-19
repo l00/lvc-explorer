@@ -1,6 +1,8 @@
 # LVC Explorer
 Blockchain explorer and API for the Levcoin cryptocurrency.
 
+Accessible at https://explorer.levco.in/
+
 ## API Endpoints
 
 `GET /last_block_header` — Returns difficulty, height and reward of the last block
