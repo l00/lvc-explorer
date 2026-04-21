@@ -1,7 +1,7 @@
 # LVC Explorer
 Blockchain explorer and API for the Levcoin cryptocurrency.
 
-Accessible at https://explorer.levco.in/
+Accessible at https://explorer.levcoin.net/
 
 ## API Endpoints
 
