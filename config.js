@@ -1,3 +1,3 @@
 const config = {
-  apiUrl: "https://api.levco.in"
+  apiUrl: "https://api-explorer.levcoin.net"
 };
