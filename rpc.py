@@ -3,20 +3,20 @@ import requests
 URL = "http://127.0.0.1:18081/json_rpc"
 
 def get_blocks_list(height: int):
-    payload = {
+    json = {
         "jsonrpc": "2.0",
         "id": "0",
         "method": "f_blocks_list_json",
         "params": {"height": height}
     }
-    r = requests.post(URL, json=payload)
+    r = requests.post(URL, json=json)
     r.raise_for_status()
     return r.json()
 
 def get_tx_details(hash: str):
     json =  {
     "jsonrpc": "2.0",
-    "id": "test",
+    "id": "0",
     "method": "f_transaction_json",
     "params": {
         "hash": hash
