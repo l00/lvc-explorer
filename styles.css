@@ -22,8 +22,6 @@ body.light #info {
     color: rgb(102, 102, 102);
 }
 footer {
-    position: fixed;
-    bottom: 0;
     width: 100%;
 }
 a:link {

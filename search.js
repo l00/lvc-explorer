@@ -21,7 +21,7 @@ async function search() {
             const txDay = txDate.toLocaleDateString("en-GB");
 
             html += `${t('timestamp')}: <strong>${txTime} | ${txDay}<br></strong>
-            ${t('block_hash')}: <strong>${txData.result.block.hash}</strong> | ${t('block_height')}: <strong>${txData.result.block.height}</strong><br>
+            ${t('block_hash')}: <strong>${txData.result.block.hash} ${copyBtn(txData.result.block.hash)}</strong> | ${t('block_height')}: <strong>${txData.result.block.height}</strong><br>
             ${t('status')}: <strong>${txData.result.status}</strong><br>`;
 
             document.getElementById("search-result").innerHTML = html;
